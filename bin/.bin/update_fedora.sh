@@ -8,10 +8,13 @@ FLATPAK=false
 
 check_updates() {
   info "Checking for system updates..."
-  sudo dnf check-update || {
+  sudo dnf check-update
+  dnf_exit=$?
+
+  if [[ $dnf_exit -ne 0 && $dnf_exit -ne 100 ]]; then
     error "Failed to check for system updates!"
     exit 1
-  }
+  fi
 
   info "\nChecking for Flatpak updates..."
   flatpak remote-ls --updates || {
