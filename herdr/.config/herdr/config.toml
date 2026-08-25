@@ -4,7 +4,7 @@ onboarding = false
 enabled = false
 
 [ui.toast]
-delivery = "system"
+delivery = "terminal"
 
 [ui]
 show_agent_labels_on_pane_borders = true

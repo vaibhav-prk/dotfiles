@@ -3,7 +3,7 @@ working_dir = "~/Dev/projects/DevEnv"
 
 [[tabs]]
 name = "code"
-command = "vim"
+command = "nvim"
 
 [[tabs]]
 name = "agent"

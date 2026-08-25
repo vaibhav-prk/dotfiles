@@ -1,0 +1,18 @@
+name = "WardGate"
+working_dir = "~/Dev/projects/Wardgate"
+
+[[tabs]]
+name = "code"
+command = "nvim"
+
+[[tabs]]
+name = "agent"
+command = "agy --conversation=7f51f398-6c92-4c54-95a5-9ab514b86107"
+
+[[tabs]]
+name = "git"
+command = "cd ~/Dev/projects/Wardgate && lazygit"
+
+[[tabs]]
+name = "terminal"
+command = "cd ~/Dev/projects/Wardgate"

@@ -1,0 +1,18 @@
+name = "stage-manger"
+working_dir = "~/Dev/projects/gnome-stage-manager/"
+
+[[tabs]]
+name = "code"
+command = "nvim"
+
+[[tabs]]
+name = "agent"
+command = "agy --conversation=011c6702-3c8f-45f3-9761-d249bd1df05a"
+
+[[tabs]]
+name = "git"
+command = "cd ~/Dev/projects/gnome-stage-manager && lazygit"
+
+[[tabs]]
+name = "termial"
+command = "cd ~/Dev/projects/gnome-stage-manager"
