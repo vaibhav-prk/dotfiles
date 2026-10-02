@@ -1,6 +1,6 @@
 # This is the configuration file for Ghostty.
 
-theme = catppuccin-frappe
+theme = Catppuccin Frappe
 font-family = JetBrainsMono Nerd Font
 # font-family = FiraCode Nerd Font
 font-size = 11.5
