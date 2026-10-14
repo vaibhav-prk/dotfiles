@@ -64,9 +64,3 @@ key = "prefix+y"
 type = "plugin_action"
 command = "cloudmanic.herdr-plus.quick-actions"
 description = "herdr-plus: quick-actions"
-
-[[keys.command]]
-key         = "prefix+shift+t"
-type        = "plugin_action"
-command     = "jwarykowski.herdr-shepherd.open-overlay"
-description = "shepherd todo overlay"
