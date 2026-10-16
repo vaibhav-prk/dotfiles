@@ -1,34 +1,83 @@
 #!/usr/bin/env bash
 
-tmux display-popup -E -h 70% -w 60% -x C -y C "
-  (dnf list --available --quiet \
-    | awk '{print \$1}' \
-    | sed 's/\\..*\$//' \
-    | grep -v -E '^(lib|glibc|kernel|systemd|dbus|grub|dracut|font|NetworkManager)' \
-    | grep -v -E '(devel|debug|debuginfo|doc|lang|headers|common|data|libs?)\$' \
-    | sed 's/\$/\\t[rpm]/' \
-    | sed 's/\$/\\t[rpm]/' | head -200;
+source "$HOME/.bin/utils/colors.sh"
 
-   flatpak remote-ls flathub --app --columns=application \
-   | sed 's/\$/\\t[flatpak]/' | head -200) \
-   | sort | fzf --with-nth=1 --delimiter='\t' \
-      --bind='change:reload(
-        if [ {q} ]; then
-          (dnf list --available --quiet | awk \"{print \\\$1}\" | sed \"s/\\..*\$//\" | grep -i {q} | sed \"s/\$/\\t[rpm]/\"; \
-           flatpak remote-ls flathub --app --columns=application | grep -i {q} | sed \"s/\$/\\t[flatpak]/\") | sort;
-        else
-          (dnf list --available --quiet | awk \"{print \\\$1}\" | sed \"s/\\..*\$//\" | sed \"s/\$/\\t[rpm]/\" | head -200; \
-           flatpak remote-ls flathub --app --columns=application | sed \"s/\$/\\t[flatpak]/\" | head -200) | sort;
-        fi)' \
-      --bind='enter:execute(
-        if [[ {2} == \"[flatpak]\" ]]; then
-          flatpak install -y flathub {1};
-        else
-          sudo dnf install -y {1};
-        fi
-      )+abort' \
-      --preview='if [[ {2} == \"[flatpak]\" ]]; then flatpak remote-info flathub {1} 2>/dev/null; else dnf info {1} 2>/dev/null; fi' \
-      --preview-window='down:50%' \
-      --border='rounded' \
-      --height='100%'
-"
+if ! command -v fzf >/dev/null 2>&1; then
+  error "fzf not installed."
+  info "Install fzf using dnf install fzf"
+  exit 1
+fi
+
+set -euo pipefail
+
+for cmd in fzf dnf awk grep sort; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    printf 'Error: %s is required.\n' "$cmd" >&2
+    exit 1
+  fi
+done
+
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/pkg-install"
+cache="$cache_dir/packages.tsv"
+mkdir -p "$cache_dir"
+
+refresh_cache() {
+  local tmp
+  tmp=$(mktemp "$cache_dir/packages.XXXXXX")
+
+  {
+    dnf repoquery --available --qf '%{name}\n' 2>/dev/null |
+      awk '!seen[$0]++ { print $0 "\t[rpm]" }'
+    if command -v flatpak >/dev/null 2>&1; then
+      flatpak remote-ls flathub --app \
+        --columns=application 2>/dev/null |
+        awk 'NF { print $0 "\t[flatpak]" }'
+    fi
+  } | sort -u >"$tmp" || {
+    rm -f "$tmp"
+    return 1
+  }
+
+  mv "$tmp" "$cache"
+}
+
+if [[ ! -s "$cache" || "$cache" -ot /etc/os-release ]]; then
+  printf 'Loading package list from repositories...\n' >&2
+  refresh_cache
+fi
+
+# Refresh the cache in the background when it is older than 24 hours.
+if [[ -n "$(find "$cache" -mmin +1440 -print -quit 2>/dev/null)" ]]; then
+  refresh_cache &
+fi
+
+selected=$(
+  fzf \
+    --disabled \
+    --delimiter=$'\t' \
+    --with-nth=1 \
+    --prompt='Install package > ' \
+    --header='Literal substring search | Enter: install | Esc: cancel' \
+    --bind="start:reload(cat '$cache')" \
+    --bind="change:reload(grep -iF -- {q} '$cache' || true)" \
+    --preview='
+            if [[ {2} == "[flatpak]" ]]; then
+                flatpak remote-info flathub {1} 2>/dev/null
+            else
+                dnf info {1} 2>/dev/null
+            fi
+        ' \
+    --preview-window='right:50%' \
+    --border=rounded
+) || exit 0
+
+IFS=$'\t' read -r package source <<<"$selected"
+
+case "$source" in
+'[rpm]') sudo dnf install "$package" ;;
+'[flatpak]') flatpak install flathub "$package" ;;
+*)
+  printf 'Unknown package source.\n' >&2
+  exit 1
+  ;;
+esac
