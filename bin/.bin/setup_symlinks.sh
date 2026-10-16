@@ -2,6 +2,12 @@
 
 source "$HOME/.bin/utils/colors.sh"
 
+if ! command -v stow >/dev/null 2>&1; then
+  error "GNU: Stow not installed."
+  info "Install that using dnf install stow"
+  exit 1
+fi
+
 # Define the paths of the files and directories to be removed
 FILES=(
   "$HOME/.zshrc"
@@ -60,14 +66,16 @@ pwd
 
 PACKAGES=(
   bin
-  ghostty
+  #ghostty
   kitty
   nvim
   starship
-  tmux
+  #tmux
   zsh
   zsh-plugins
   fastfetch
+  herdr
+  git
 )
 
 for pkg in "${PACKAGES[@]}"; do
