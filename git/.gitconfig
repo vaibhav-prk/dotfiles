@@ -1,0 +1,11 @@
+[user]
+	name = Vaibhav Prakash
+	email = vaibhavprakash549@gmail.com
+[init]
+	defaultBranch = main
+[alias]
+  st = status
+  lg = log --oneline --graph --decorate
+  last = log -1 HEAD
+  unstage = restore --staged
+  branches = branch --sort=-committerdate
