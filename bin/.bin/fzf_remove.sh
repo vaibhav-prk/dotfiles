@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
-source "$HOME/.bin/utils/colors.sh"
-
-if ! command -v fzf >/dev/null 2>&1; then
-  error "fzf not installed."
-  info "Install fzf using dnf install fzf"
-  exit 1
-fi
+for cmd in fzf dnf awk grep sort; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    printf 'Error: %s is required.\n' "$cmd" >&2
+    exit 1
+  fi
+done
 
 set -uo pipefail
 
@@ -29,6 +28,9 @@ selected=$(
   fzf \
     --disabled \
     --delimiter=$'\t' \
+    --with-nth=1 \
+    --prompt='Remove package > ' \
+    --header='Enter: remove | Esc or Ctrl+C: cancel' \
     --bind="start:reload(cat '$tmp')" \
     --bind="change:reload(grep -iF -- {q} '$tmp' || true)" \
     --preview='
@@ -41,7 +43,6 @@ selected=$(
     --preview-window='down:50%' \
     --border=rounded \
     --height=100% \
-    --header='Type to search • Enter to select • Ctrl-C to cancel' \
     </dev/null
 ) || exit 0
 

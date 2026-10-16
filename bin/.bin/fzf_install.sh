@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 
-source "$HOME/.bin/utils/colors.sh"
-
-if ! command -v fzf >/dev/null 2>&1; then
-  error "fzf not installed."
-  info "Install fzf using dnf install fzf"
-  exit 1
-fi
-
-set -euo pipefail
-
 for cmd in fzf dnf awk grep sort; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     printf 'Error: %s is required.\n' "$cmd" >&2
     exit 1
   fi
 done
+
+set -euo pipefail
 
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/pkg-install"
 cache="$cache_dir/packages.tsv"
@@ -41,6 +33,13 @@ refresh_cache() {
   mv "$tmp" "$cache"
 }
 
+case "${1:-}" in
+-up | --update)
+  echo "Updating cache..."
+  refresh_cache
+  ;;
+esac
+
 if [[ ! -s "$cache" || "$cache" -ot /etc/os-release ]]; then
   printf 'Loading package list from repositories...\n' >&2
   refresh_cache
@@ -57,7 +56,7 @@ selected=$(
     --delimiter=$'\t' \
     --with-nth=1 \
     --prompt='Install package > ' \
-    --header='Literal substring search | Enter: install | Esc: cancel' \
+    --header='Enter: install | Esc or Ctrl+C: cancel' \
     --bind="start:reload(cat '$cache')" \
     --bind="change:reload(grep -iF -- {q} '$cache' || true)" \
     --preview='
@@ -67,8 +66,9 @@ selected=$(
                 dnf info {1} 2>/dev/null
             fi
         ' \
-    --preview-window='right:50%' \
-    --border=rounded
+    --preview-window='down:50%' \
+    --border=rounded \
+    --height=100%
 ) || exit 0
 
 IFS=$'\t' read -r package source <<<"$selected"
