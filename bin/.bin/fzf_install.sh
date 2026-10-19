@@ -18,14 +18,17 @@ refresh_cache() {
   tmp=$(mktemp "$cache_dir/packages.XXXXXX")
 
   {
-    dnf repoquery --available --qf '%{name}\n' 2>/dev/null |
-      awk '!seen[$0]++ { print $0 "\t[rpm]" }'
+    dnf repoquery --available --qf '%{name} %{version}\n' 2>/dev/null |
+      awk '!seen[$0]++ { 
+      split($0, fields, " ")
+      printf "%s\t%s\t[rpm]\n", fields[1], fields[2]
+    } '
     if command -v flatpak >/dev/null 2>&1; then
       flatpak remote-ls flathub --app \
-        --columns=application 2>/dev/null |
-        awk 'NF { print $0 "\t[flatpak]" }'
+        --columns=application,version 2>/dev/null |
+        awk 'NF >= 2 { printf "%s\t%s\t[flatpak]\n", $1, $2 }'
     fi
-  } | sort -u >"$tmp" || {
+  } | sort -t $'\t' -k1,1 -k2,2Vr >"$tmp" || {
     rm -f "$tmp"
     return 1
   }
@@ -53,10 +56,11 @@ fi
 selected=$(
   fzf \
     --multi \
+    --exact \
     --layout=reverse \
     --border=rounded \
     --delimiter=$'\t' \
-    --with-nth=1 \
+    --with-nth=1,2 \
     --prompt='Search packages > ' \
     --header='Tab: toggle selection | Enter: install | Esc or Ctrl + C: exit' \
     --bind='tab:toggle+transform-header:
@@ -67,7 +71,7 @@ selected=$(
         fi
     ' \
     --preview='
-      if [[ {2} == "[flatpak]" ]]; then
+      if [[ {3} == "[flatpak]" ]]; then
         flatpak remote-info flathub {1} 2>/dev/null
       else
         dnf info {1} 2>/dev/null
@@ -81,11 +85,11 @@ selected=$(
 rpm_packages=()
 flatpak_packages=()
 
-while IFS=$'\t' read -r package source; do
+while IFS=$'\t' read -r package version source; do
   [[ -z "$package" ]] && continue
 
   case "$source" in
-  '[rpm]') rpm_packages+=("$package") ;;
+  '[rpm]') rpm_packages+=("$package-$version") ;;
   '[flatpak]') flatpak_packages+=("$package") ;;
   *)
     printf 'Unknown package source.\n' >&2
@@ -95,9 +99,13 @@ while IFS=$'\t' read -r package source; do
 done <<<"$selected"
 
 if ((${#rpm_packages[@]})); then
+  printf 'Installing RPM pacakage(s):\n'
+  printf ' %s\n' "${rpm_packages[@]}"
   sudo dnf install "${rpm_packages[@]}"
 fi
 
 if ((${#flatpak_packages[@]})); then
+  printf 'Installing Flatpak applications:\n'
+  printf '  %s\n' "${flatpak_packages[@]}"
   flatpak install flathub "${flatpak_packages[@]}"
 fi

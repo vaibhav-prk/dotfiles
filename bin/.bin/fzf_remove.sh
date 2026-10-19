@@ -13,24 +13,28 @@ tmp=$(mktemp) || exit 1
 trap 'rm -f "$tmp"' EXIT
 
 {
-  rpm -qa --qf '%{NAME}\n' |
-    awk '{print $0 "\t[rpm]"}' |
+  rpm -qa --qf '%{NAME} %{VERSION}\n' |
+    awk '!seen[$0]++ {
+      split($0, fields, " ")
+      printf "%s\t%s\t[rpm]\n", fields[1], fields[2]
+    }' |
     grep -v -E '^(lib|font|glibc|kernel|systemd|dbus|NetworkManager|grub|dracut)' |
     grep -v -E '(devel|debug|doc|lang|headers)$'
 
   if command -v flatpak >/dev/null 2>&1; then
-    flatpak list --app --columns=application 2>/dev/null |
-      awk 'NF { print $0 "\t[flatpak]" }'
+    flatpak list --app --columns=application,version 2>/dev/null |
+      awk 'NF >= 2 { printf "%s\t%s\t[flatpak]\n", $1, $2 }'
   fi
-} | sort -u >"$tmp"
+} | sort -t $'\t' -k1,1 -k2,2Vr -u >"$tmp"
 
 selected=$(
   fzf \
     --multi \
+    --exact \
     --layout=reverse \
     --border=rounded \
     --delimiter=$'\t' \
-    --with-nth=1 \
+    --with-nth=1,2 \
     --prompt='Search packages > ' \
     --header='Tab: toggle selection | Enter: remove | Esc or Ctrl+C: cancel' \
     --bind='tab:toggle+transform-header:
@@ -41,7 +45,7 @@ selected=$(
         fi
     ' \
     --preview='
-      if [[ {2} == "[flatpak]" ]]; then
+      if [[ {3} == "[flatpak]" ]]; then
         flatpak info {1} 2>/dev/null
       else
         rpm -qi {1} 2>/dev/null
@@ -57,11 +61,11 @@ selected=$(
 rpm_packages=()
 flatpak_packages=()
 
-while IFS=$'\t' read -r name source; do
+while IFS=$'\t' read -r name version source; do
   [[ -z "$name" ]] && continue
 
   case "$source" in
-  '[rpm]') rpm_packages+=("$name") ;;
+  '[rpm]') rpm_packages+=("$name-$version") ;;
   '[flatpak]') flatpak_packages+=("$name") ;;
   *)
     printf 'Unknown package source: %s\n' "$source" >&2
