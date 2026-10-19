@@ -24,28 +24,6 @@ trap 'rm -f "$tmp"' EXIT
   fi
 } | sort -u >"$tmp"
 
-# selected=$(
-#   fzf \
-#     --disabled \
-#     --delimiter=$'\t' \
-#     --with-nth=1 \
-#     --prompt='Remove package > ' \
-#     --header='Tab: toggle selection | Enter: remove | Esc or Ctrl+C: cancel' \
-#     --bind="start:reload(cat '$tmp')" \
-#     --bind="change:reload(grep -iF -- {q} '$tmp' || true)" \
-#     --preview='
-#             if [[ {2} == "[flatpak]" ]]; then
-#                 flatpak info {1} 2>/dev/null
-#             else
-#                 rpm -qi {1} 2>/dev/null
-#             fi
-#         ' \
-#     --preview-window='down:50%' \
-#     --border=rounded \
-#     --height=100% \
-#     </dev/null
-# ) || exit 0
-
 selected=$(
   fzf \
     --multi \
