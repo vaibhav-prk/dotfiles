@@ -24,48 +24,82 @@ trap 'rm -f "$tmp"' EXIT
   fi
 } | sort -u >"$tmp"
 
+# selected=$(
+#   fzf \
+#     --disabled \
+#     --delimiter=$'\t' \
+#     --with-nth=1 \
+#     --prompt='Remove package > ' \
+#     --header='Tab: toggle selection | Enter: remove | Esc or Ctrl+C: cancel' \
+#     --bind="start:reload(cat '$tmp')" \
+#     --bind="change:reload(grep -iF -- {q} '$tmp' || true)" \
+#     --preview='
+#             if [[ {2} == "[flatpak]" ]]; then
+#                 flatpak info {1} 2>/dev/null
+#             else
+#                 rpm -qi {1} 2>/dev/null
+#             fi
+#         ' \
+#     --preview-window='down:50%' \
+#     --border=rounded \
+#     --height=100% \
+#     </dev/null
+# ) || exit 0
+
 selected=$(
   fzf \
-    --disabled \
+    --multi \
+    --layout=reverse \
+    --border=rounded \
     --delimiter=$'\t' \
     --with-nth=1 \
-    --prompt='Remove package > ' \
-    --header='Enter: remove | Esc or Ctrl+C: cancel' \
-    --bind="start:reload(cat '$tmp')" \
-    --bind="change:reload(grep -iF -- {q} '$tmp' || true)" \
+    --prompt='Search packages > ' \
+    --header='Tab: toggle selection | Enter: remove | Esc or Ctrl+C: cancel' \
+    --bind='tab:toggle+transform-header:
+        printf "Tab: toggle selection | Enter: install | Esc or Ctrl + C: exit\n"
+        if [[ -n "{+1}" && "$FZF_SELECT_COUNT" -gt 0 ]]; then
+          printf "SELECTED PACKAGES\n%s\n" "{+1}"
+          printf "-------------------------------\n"
+        fi
+    ' \
     --preview='
-            if [[ {2} == "[flatpak]" ]]; then
-                flatpak info {1} 2>/dev/null
-            else
-                rpm -qi {1} 2>/dev/null
-            fi
-        ' \
-    --preview-window='down:50%' \
-    --border=rounded \
+      if [[ {2} == "[flatpak]" ]]; then
+        flatpak info {1} 2>/dev/null
+      else
+        rpm -qi {1} 2>/dev/null
+      fi
+    ' \
+    --preview-window='right:55%:wrap:border-left' \
     --height=100% \
-    </dev/null
+    <"$tmp"
 ) || exit 0
 
 [[ -n "$selected" ]] || exit 0
 
-IFS=$'\t' read -r name source <<<"$selected"
+rpm_packages=()
+flatpak_packages=()
 
-if [[ -z "$name" || -z "$source" ]]; then
-  printf 'Could not determine package name and source: %s\n' "$selected" >&2
-  exit 1
+while IFS=$'\t' read -r name source; do
+  [[ -z "$name" ]] && continue
+
+  case "$source" in
+  '[rpm]') rpm_packages+=("$name") ;;
+  '[flatpak]') flatpak_packages+=("$name") ;;
+  *)
+    printf 'Unknown package source: %s\n' "$source" >&2
+    exit 1
+    ;;
+  esac
+done <<<"$selected"
+
+if ((${#rpm_packages[@]})); then
+  printf 'Removing RPM packages:\n'
+  printf '  %s\n' "${rpm_packages[@]}"
+  sudo dnf remove "${rpm_packages[@]}"
 fi
 
-printf '\nSelected: %s %s\n' "$name" "$source"
-
-case "$source" in
-'[flatpak]')
-  flatpak uninstall --delete-data "$name"
-  ;;
-'[rpm]')
-  sudo dnf remove "$name"
-  ;;
-*)
-  printf 'Unknown package source: %s\n' "$source" >&2
-  exit 1
-  ;;
-esac
+if ((${#flatpak_packages[@]})); then
+  printf 'Removing Flatpak applications:\n'
+  printf '  %s\n' "${flatpak_packages[@]}"
+  flatpak uninstall --delete-data "${flatpak_packages[@]}"
+fi

@@ -52,32 +52,52 @@ fi
 
 selected=$(
   fzf \
-    --disabled \
+    --multi \
+    --layout=reverse \
+    --border=rounded \
     --delimiter=$'\t' \
     --with-nth=1 \
-    --prompt='Install package > ' \
-    --header='Enter: install | Esc or Ctrl+C: cancel' \
-    --bind="start:reload(cat '$cache')" \
-    --bind="change:reload(grep -iF -- {q} '$cache' || true)" \
+    --prompt='Search packages > ' \
+    --header='Tab: toggle selection | Enter: install | Esc or Ctrl + C: exit' \
+    --bind='tab:toggle+transform-header:
+        printf "Tab: toggle selection | Enter: install | Esc or Ctrl + C: exit\n"
+        if [[ -n "{+1}" && "$FZF_SELECT_COUNT" -gt 0 ]]; then
+          printf "SELECTED PACKAGES\n%s\n" "{+1}"
+          printf "-------------------------------\n"
+        fi
+    ' \
     --preview='
-            if [[ {2} == "[flatpak]" ]]; then
-                flatpak remote-info flathub {1} 2>/dev/null
-            else
-                dnf info {1} 2>/dev/null
-            fi
-        ' \
-    --preview-window='down:50%' \
-    --border=rounded \
-    --height=100%
+      if [[ {2} == "[flatpak]" ]]; then
+        flatpak remote-info flathub {1} 2>/dev/null
+      else
+        dnf info {1} 2>/dev/null
+      fi
+    ' \
+    --preview-window='right:55%:wrap:border-left' \
+    --height=100% \
+    <"$cache"
 ) || exit 0
 
-IFS=$'\t' read -r package source <<<"$selected"
+rpm_packages=()
+flatpak_packages=()
 
-case "$source" in
-'[rpm]') sudo dnf install "$package" ;;
-'[flatpak]') flatpak install flathub "$package" ;;
-*)
-  printf 'Unknown package source.\n' >&2
-  exit 1
-  ;;
-esac
+while IFS=$'\t' read -r package source; do
+  [[ -z "$package" ]] && continue
+
+  case "$source" in
+  '[rpm]') rpm_packages+=("$package") ;;
+  '[flatpak]') flatpak_packages+=("$package") ;;
+  *)
+    printf 'Unknown package source.\n' >&2
+    exit 1
+    ;;
+  esac
+done <<<"$selected"
+
+if ((${#rpm_packages[@]})); then
+  sudo dnf install "${rpm_packages[@]}"
+fi
+
+if ((${#flatpak_packages[@]})); then
+  flatpak install flathub "${flatpak_packages[@]}"
+fi
