@@ -13,10 +13,10 @@ packages=(
   fastfetch
   yazi
   stow
-  scrcpy
   starship
   tldr
   btop
+  pass
 )
 
 docker=(
