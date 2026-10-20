@@ -24,7 +24,8 @@ $docker_context\
 [](fg:blue bg:purple)\
 $time\
 [ ](fg:purple)\
-$line_break$character"""
+$line_break\
+$character"""
 
 palette = 'catppuccin_mocha'
 
@@ -92,6 +93,7 @@ CentOS = ""
 Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
+Void = " "
 
 [username]
 show_always = true
@@ -110,7 +112,7 @@ truncation_symbol = "…/"
 "Downloads" = " "
 "Music" = "󰝚 "
 "Pictures" = " "
-"Developer" = "󰲋 "
+"Dev" = "󰲋 "
 
 [git_branch]
 symbol = ""
@@ -164,7 +166,7 @@ format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
 [python]
 symbol = ""
 style = "bg:teal"
-format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:base bg:teal)]($style)'
 
 [docker_context]
 symbol = ""
