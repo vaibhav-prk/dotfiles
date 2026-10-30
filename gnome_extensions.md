@@ -11,5 +11,6 @@
 - **Caffeine**@patapon (Disable screensaver and auto suspend.)
 - **Lock Keys** @vania (Numlock and Capslock status indicator.)
 - **User Themes** @gnome-extensions (Load shell Themes from user directory.)
-- **Bluetooth Battery Meter** @maniacx.github.com (Shows Battery details of connected bluetooth devices)
-- **GSConnect** @andyholmes (Used with KDE Connect mobile app)
+- **Bluetooth Battery Meter** @maniacx.github.com (Shows Battery details of connected bluetooth devices.)
+- **GSConnect** @andyholmes (Used with KDE Connect mobile app.)
+- **WACK- Sonoma Lockscreen** @rinzler69 (Customize Lock Screen.)
