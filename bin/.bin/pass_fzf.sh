@@ -22,7 +22,7 @@ while getopts ":c" opt; do
   esac
 done
 
-entry=$(pass git ls-files | sed 's/\.gpg$//' | fzf)
+entry=$(pass git ls-files '*.gpg' | sed 's/\.gpg$//' | fzf)
 
 if [ -z "$entry" ]; then
   exit 1
