@@ -1,0 +1,15 @@
+[Unit]
+Description=aria2 Download Manager
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.config/aria2.env
+ExecStart=/usr/bin/aria2c --conf-path=%h/.config/aria2/aria2.conf --rpc-secret=${ARIA2_RPC_SECRET}
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -11,11 +11,9 @@ fi
 # Define the paths of the files and directories to be removed
 FILES=(
   "$HOME/.zshrc"
-  "$HOME/.tmux.conf"
 )
 
 FOLDERS=(
-  "$HOME/.config/ghostty"
   "$HOME/.config/nvim"
   "$HOME/.config/starship"
   "$HOME/.config/fastfetch"
@@ -66,16 +64,15 @@ pwd
 
 PACKAGES=(
   bin
-  #ghostty
   kitty
   nvim
   starship
-  #tmux
   zsh
   zsh-plugins
   fastfetch
   herdr
   git
+  aria2
 )
 
 for pkg in "${PACKAGES[@]}"; do

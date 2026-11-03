@@ -4,9 +4,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
 
 packages=(
   zsh
-  #ghostty
   kitty
-  #tmux
   vim
   bat
   fzf
@@ -17,6 +15,7 @@ packages=(
   tldr
   btop
   pass
+  aria2
 )
 
 docker=(
@@ -69,8 +68,6 @@ if curl -fsSL https://herdr.dev/install.sh | sh; then
   export PATH="$HOME/.local/bin:$PATH"
   herdr plugin install cloudmanic/herdr-plus --yes
   herdr plugin install qu8n/herdr-automatic-rename --yes
-  herdr plugin install jwarykowski/shepherd --yes
-  herdr plugin install rjyo/herdr-window-title-sync --yes
   print_success "herdr and plugins installed"
 else
   print_error "Failed to install herdr"
