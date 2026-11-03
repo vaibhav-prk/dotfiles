@@ -34,7 +34,7 @@ source "$SCRIPT_DIR/repos/docker.sh"
 # Install packages
 print_section "Installing packages"
 source "$SCRIPT_DIR/packages/terminal.sh"
-source "$SCRIPT_DIR/packages/devlopment.sh"
+source "$SCRIPT_DIR/packages/development.sh"
 source "$SCRIPT_DIR/packages/desktop.sh"
 
 # Install flatpak apps
