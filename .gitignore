@@ -3,7 +3,8 @@ bin/.bin/login_config.conf
 *.log
 
 # herdr
-herdr/.config/herdr/*.sock
-herdr/.config/herdr/plugins/github
+herdr/.config/herdr/*.sock*
+herdr/.config/herdr/plugins/github*
 herdr/.config/herdr/*.json
 herdr/.config/herdr/session-snapshots/
+herdr/.config/herdr/plugins/.locks/
