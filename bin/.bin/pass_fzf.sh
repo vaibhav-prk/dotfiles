@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
-source "$HOME/.bin/utils/colors.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/utils/colors.sh"
 
 # Use pass with fzf to fuzzy find password
 

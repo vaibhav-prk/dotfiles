@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 if repo_enabled "docker"; then
   print_warning "Docker Repo already enabled."

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-source "$HOME/.bin/utils/colors.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/utils/helpers.sh"
 
 if ! command -v stow >/dev/null 2>&1; then
   error "GNU: Stow not installed."
   info "Install that using dnf install stow"
-  exit 1
+  return 1 2>/dev/null || exit 1
 fi
 
 # Define the paths of the files and directories to be removed
@@ -24,21 +25,23 @@ FOLDERS=(
 
 # Function to safely remove files
 remove_file() {
-  if [ -f "$1" ] || [ -L "$1" ]; then
-    warn "Removing file: $1"
-    rm -r "$1"
+  local target="${1:-}"
+  if [ -n "$target" ] && ([ -f "$target" ] || [ -L "$target" ]); then
+    warn "Removing file: $target"
+    rm -r "$target"
   else
-    warn "No file found: $1"
+    warn "No file found: $target"
   fi
 }
 
 # Function to safely remove directories
 remove_directory() {
-  if [ -d "$1" ]; then
-    warn "Removing directory: $1"
-    rm -rf "$1"
+  local target="${1:-}"
+  if [ -n "$target" ] && [ -d "$target" ]; then
+    warn "Removing directory: $target"
+    rm -rf "$target"
   else
-    warn "No directory found: $1"
+    warn "No directory found: $target"
   fi
 }
 
@@ -54,13 +57,16 @@ done
 
 success "Cleanup complete."
 
-# Use stow to create symlinks for each package
-cd "$HOME/dotfiles" || {
-  error "Failed to change directory"
-  error "Exiting"
-  exit 1
+DOTFILES_DIR="${HOME}/dotfiles"
+if [[ ! -d "$DOTFILES_DIR" ]]; then
+  error "Dotfiles directory not found at $DOTFILES_DIR"
+  return 1 2>/dev/null || exit 1
+fi
+
+pushd "$DOTFILES_DIR" >/dev/null || {
+  error "Failed to change directory to $DOTFILES_DIR"
+  return 1 2>/dev/null || exit 1
 }
-pwd
 
 PACKAGES=(
   bin
@@ -78,5 +84,7 @@ PACKAGES=(
 for pkg in "${PACKAGES[@]}"; do
   stow -v "$pkg"
 done
+
+popd >/dev/null
 
 success "Stowing complete"

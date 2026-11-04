@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source "$HOME/.bin/utils/colors.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/utils/colors.sh"
 
 #This script updates system and software
 DNF=false
@@ -23,7 +24,7 @@ check_updates() {
   }
 
   info "\nChecking for firmware updates..."
-  sudo fwupdmgr get-updates
+  fwupdmgr get-updates
   local fw_exit=$?
   if [[ $fw_exit -ne 0 && $fw_exit -ne 2 ]]; then
     error "Failed to check for firmware updates!"

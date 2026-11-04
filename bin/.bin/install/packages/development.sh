@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 packages=(
   golang
@@ -8,7 +8,6 @@ packages=(
   lazygit
   neovim
   git
-  gh
   direnv
 )
 
@@ -38,4 +37,4 @@ else
 fi
 print_separator
 
-print_section_complete "Devlopment tools installation complete!"
+print_section_complete "Development tools installation complete!"

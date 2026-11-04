@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 # Format: "app_id|display_name"
 flatpak_apps=(
   "app.zen_browser.zen|Zen Browser"
-  "com.spotify.Client|Spotify"
   "net.davidotek.pupgui2|ProtonUP-Qt"
   "com.mattjakeman.ExtensionManager|ExtensionManager"
 )

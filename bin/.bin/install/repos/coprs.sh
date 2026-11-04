@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 # Install dnf-plugins-core
 echo ""
@@ -20,7 +20,6 @@ print_separator
 
 # Array of COPR repos: "name|identifier"
 coprs=(
-  "Ghostty|pgdev/ghostty"
   "Yazi|lihaohong/yazi"
   "Lazygit|dejan/lazygit"
   "Starship|atim/starship"
@@ -32,7 +31,7 @@ for copr_entry in "${coprs[@]}"; do
   if copr_enabled "$identifier"; then
     print_warning "$name COPR already enabled"
   else
-    echo "Enabling $name COPR..."
+    echo -e "${BLUE}[Enabling]${NC} $name COPR..."
     sudo dnf copr enable "$identifier" -y
     print_success "$name COPR enabled"
   fi

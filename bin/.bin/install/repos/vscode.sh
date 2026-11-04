@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 if repo_enabled "code"; then
   print_warning "VS Code repo already enabled"

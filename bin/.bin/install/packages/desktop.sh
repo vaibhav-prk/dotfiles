@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/../helpers.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 
 packages=(
   gnome-tweaks
   vlc
-  qbittorrent
-  discord
-  foliate
 )
 
 for pkg in "${packages[@]}"; do
