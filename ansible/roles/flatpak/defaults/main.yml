@@ -1,0 +1,4 @@
+flatpak_packages:
+  - app.zen_browser.zen
+  - net.davidotek.pupgui2
+  - com.mattjakeman.ExtensionManager

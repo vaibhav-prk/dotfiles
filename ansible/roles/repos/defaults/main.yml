@@ -1,0 +1,18 @@
+repos_copr:
+  - atim/starship
+  - dejan/lazygit
+
+repos_vscode_gpg_key: https://packages.microsoft.com/keys/microsoft.asc
+repos_vscode_repo_file: /etc/yum.repos.d/vscode.repo
+repos_vscode_repo_content: |
+  [code]
+  name=Visual Studio Code
+  baseurl=https://packages.microsoft.com/yumrepos/vscode
+  enabled=1
+  autorefresh=1
+  type=rpm-md
+  gpgcheck=1
+  gpgkey={{ repos_vscode_gpg_key }}
+
+repos_docker_repo_url: https://download.docker.com/linux/fedora/docker-ce.repo
+repos_docker_repo_file: /etc/yum.repos.d/docker-ce.repo

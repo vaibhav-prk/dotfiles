@@ -1,0 +1,21 @@
+- name: Check for existing
+  ansible.builtin.stat:
+   path: "{{ ansible_facts['env']['HOME'] }}/{{ item }}"
+  loop: "{{ dotfiles_stow_clean }}"
+  register: dotfiles_existing
+
+- name: Remove old configs(files/dirs)
+  ansible.builtin.file:
+   path: "{{ ansible_facts['env']['HOME'] }}/{{ item.item }}"
+   state: absent
+  loop: "{{ dotfiles_existing.results }}"
+  when: item.stat.exists
+  loop_control:
+   label: "{{ item.item }}"
+
+- name: Stow packages
+  ansible.builtin.command:
+   cmd: "stow -d {{ dotfiles_dir }} -t {{ ansible_facts['env']['HOME'] }} --restow {{ item }}"
+  loop: "{{ dotfiles_stow_packages }}"
+  register: dotfiles_stow_out
+  changed_when: "'LINK:' in dotfiles_stow_out.stderr"

@@ -4,4 +4,6 @@ gnome_extensions.md
 .*\.bak
 .*\.swp
 .*\.tmp
-.*~ 
+.*~
+ansible/
+

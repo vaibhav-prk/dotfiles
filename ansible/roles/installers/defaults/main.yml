@@ -1,0 +1,13 @@
+installers_script_installs:
+  - name: herdr
+    url: https://herdr.dev/install.sh
+    creates: "{{ ansible_facts['env']['HOME'] }}/.local/bin/herdr"
+
+installers_herdr_bin: "{{ ansible_facts['env']['HOME'] }}/.local/bin/herdr"
+installers_herdr_plugins:
+   - cloudmanic/herdr-plus
+   - qu8n/herdr-automatic-rename
+
+installers_nerd_font_name: JetBrainsMono
+installers_nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ installers_nerd_font_name }}.tar.xz"
+installers_nerd_font_dir: "{{ ansible_facts['env']['HOME'] }}/.local/share/fonts/{{ installers_nerd_font_name }}"

@@ -1,0 +1,36 @@
+dnf_packages:
+  - dnf-plugins-core
+
+  # terminal
+  - git
+  - zsh
+  - kitty
+  - vim
+  - bat
+  - fzf
+  - fastfetch
+  - yazi
+  - stow
+  - tldr
+  - btop
+  - pass
+  - aria2
+  - flatpak
+
+  # development
+  - golang
+  - neovim
+  - direnv
+  - lazygit
+  - code
+
+  # desktop
+  - gnome-tweaks
+  - vlc
+
+  # docker
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin

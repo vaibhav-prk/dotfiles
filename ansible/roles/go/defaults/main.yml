@@ -1,0 +1,2 @@
+go_tools:
+  - { pkg: github.com/jesseduffield/lazydocker@latest, bin: lazydocker}

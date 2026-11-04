@@ -1,0 +1,7 @@
+- name: Install Go tools
+  ansible.builtin.command:
+    cmd: "go install {{ item.pkg }}"
+    creates: "{{ ansible_facts['env']['HOME'] }}/go/bin/{{ item.bin }}"
+  loop: "{{ go_tools }}"
+  loop_control:
+    label: "{{ item.bin }}"

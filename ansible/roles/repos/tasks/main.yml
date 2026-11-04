@@ -1,0 +1,30 @@
+- name: Enable COPR repos
+  community.general.copr:
+    name: "{{ item }}"
+    state: enabled
+  loop: "{{ repos_copr }}"
+
+- name: Enable RPM Fusion
+  ansible.builtin.dnf:
+    name:
+      - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_version'] }}.noarch.rpm"
+      - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_version'] }}.noarch.rpm"
+    state: present
+    disable_gpg_check: true
+
+- name: Import Microsoft GPG key
+  ansible.builtin.rpm_key:
+    key: "{{ repos_vscode_gpg_key }}"
+    state: present
+
+- name: Add VS Code repo
+  ansible.builtin.copy:
+    content: "{{ repos_vscode_repo_content }}"
+    dest: "{{ repos_vscode_repo_file }}"
+    mode: "0644"
+
+- name: Add Docker repo
+  ansible.builtin.get_url:
+    url: "{{ repos_docker_repo_url }}"
+    dest: "{{ repos_docker_repo_file }}"
+    mode: "0644"

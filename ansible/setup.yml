@@ -1,0 +1,9 @@
+- name: Setup Fedora Workstation
+  hosts: localhost
+  roles:
+    - { role: repos, tags: repos}
+    - { role: dnf, become: true, tags: dnf }
+    - { role: go, tags: go}
+    - { role: flatpak, tags: flatpak }
+    - { role: dotfiles, tags: dotfiles }
+    - { role: installers, tags: installers }

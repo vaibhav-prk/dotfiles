@@ -1,0 +1,5 @@
+- name: Setup dotfiles symlinks
+  ansible.builtin.import_tasks: stow.yml
+
+- name: Setup aria2 environment
+  ansible.builtin.import_tasks: setup-aria2-env.yml

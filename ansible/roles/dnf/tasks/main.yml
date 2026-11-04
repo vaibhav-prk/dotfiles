@@ -1,0 +1,4 @@
+- name: Install packages
+  ansible.builtin.dnf:
+    name: "{{ dnf_packages }}"
+    state: present

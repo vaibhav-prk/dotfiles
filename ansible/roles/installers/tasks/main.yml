@@ -1,0 +1,46 @@
+- name: Download install scripts
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/tmp/install-{{ item.name }}.sh"
+    mode: "0755"
+  loop: "{{ installers_script_installs }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Run install scripts
+  ansible.builtin.command:
+    cmd: "sh /tmp/install-{{ item.name }}.sh"
+    creates: "{{ item.creates }}"
+  loop: "{{ installers_script_installs }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# --- Herdr Plugins ---
+- name: Install herdr plugins
+  ansible.builtin.command:
+    cmd: "{{ installers_herdr_bin }} plugin install {{ item }} --yes"
+  loop: "{{ installers_herdr_plugins }}"
+  changed_when: true
+
+# --- Nerd Font ---
+- name: Create font directory
+  ansible.builtin.file:
+    path: "{{ installers_nerd_font_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Download and extract Nerd Font
+  ansible.builtin.unarchive:
+    src: "{{ installers_nerd_font_url }}"
+    dest: "{{ installers_nerd_font_dir }}"
+    remote_src: true
+    creates: "{{ installers_nerd_font_dir }}/.installed"
+  notify: Rebuild font cache
+
+- name: Mark font as installed
+  ansible.builtin.file:
+    path: "{{ installers_nerd_font_dir }}/.installed"
+    state: touch
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve

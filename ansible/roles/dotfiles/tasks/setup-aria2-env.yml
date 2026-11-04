@@ -1,0 +1,32 @@
+- name: Create configuration directory
+  ansible.builtin.file:
+    path: "{{ dotfiles_config_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Check whether environment file exists
+  ansible.builtin.stat:
+    path: "{{ dotfiles_env_file }}"
+  register: dotfiles_aria2_env_stat
+
+- name: Generate aria2 RPC secret
+  ansible.builtin.set_fact:
+    dotfiles_aria2_rpc_secret: "{{ lookup('ansible.builtin.password', '/dev/null', length=64, chars=['hexdigits']) | lower }}"
+  when: not dotfiles_aria2_env_stat.stat.exists
+  no_log: true
+
+- name: Create aria2 environment file
+  ansible.builtin.copy:
+    dest: "{{ dotfiles_env_file }}"
+    content: |
+      ARIA2_RPC_SECRET={{ dotfiles_aria2_rpc_secret }}
+    mode: '0600'
+    force: false
+  when: not dotfiles_aria2_env_stat.stat.exists
+  no_log: true
+
+- name: Ensure environment file permissions
+  ansible.builtin.file:
+    path: "{{ dotfiles_env_file }}"
+    mode: '0600'
+  when: dotfiles_aria2_env_stat.stat.exists

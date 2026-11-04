@@ -1,0 +1,27 @@
+dotfiles_dir: "{{ playbook_dir }}/.."
+
+dotfiles_stow_clean:
+  - .zshrc
+  - .tmux.conf
+  - .config/ghostty
+  - .config/nvim
+  - .config/starship
+  - .config/fastfetch
+  - .config/kitty
+  - .config/zsh-syntax-highlighting
+  - .config/zsh-autosuggestions
+  - .config/herdr
+
+dotfiles_stow_packages:
+  - bin
+  - kitty
+  - nvim
+  - starship
+  - zsh
+  - zsh-plugins
+  - fastfetch
+  - herdr
+  - git
+
+dotfiles_config_dir: "{{ ansible_facts['env']['HOME'] }}/.config"
+dotfiles_env_file: "{{ dotfiles_config_dir }}/aria2.env"
