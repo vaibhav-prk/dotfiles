@@ -57,6 +57,28 @@ else
 fi
 print_separator
 
+# Download Babita Modern Classic Cursor
+echo ""
+echo -e "${BLUE}[Installing]${NC} Bibata Modern Classic Cursor"
+
+if [[ -d "$HOME/.local/share/icons/Bibata-Modern-Classic" ]]; then
+  print_warning "Bibata Modern Classic Cursor already installed"
+else
+  mkdir -p "$HOME/Downloads"
+  if (
+    cd "$HOME/Downloads" &&
+      wget -q --show-progress https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz &&
+      mkdir -p "$HOME/.local/share/icons" &&
+      tar -xf Bibata-Modern-Classic.tar.xz -C "$HOME/.local/share/icons" &&
+      rm -f Bibata-Modern-Classic.tar.xz
+  ); then
+    print_success "Bibata Modern Classic Cursor installed"
+  else
+    print_error "Failed to install Bibata Modern Classic Cursor"
+  fi
+fi
+print_separator
+
 echo -e "${BLUE}[Installing]${NC} herdr and herdr plugins"
 if curl -fsSL https://herdr.dev/install.sh | sh; then
   export PATH="$HOME/.local/bin:$PATH"
