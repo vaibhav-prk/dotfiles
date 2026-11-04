@@ -8,6 +8,9 @@ source "$BASE_DIR/utils/helpers.sh"
 
 print_header "Setting Up Fedora Workstation"
 
+print_info "Updating Fedora"
+sudo dnf udpate -y
+
 # 1. Repositories and packages
 source "$BASE_DIR/install/install.sh"
 
