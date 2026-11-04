@@ -1,83 +1,93 @@
 # Fedora Workstation
 
-This repository contains my personal configuration files and setup scripts for various tools, ensuring a consistent setup across different Fedora machines.
+This repository contains my personal dotfiles and setup scripts for configuring a consistent development environment across multiple Fedora machines.
 
-## What This Repo Does
+## What This Repository Does
 
-- Automatically installs all required packages (shell, terminal, tools, fonts, etc.) on Fedora via DNF and Flatpak
-- Sets up configuration files using GNU Stow to create symlinks
-- Provides a reproducible environment for Zsh, Neovim (LazyVim), Herdr, Kitty/Ghostty, and more
+- Installs essential packages and tools using DNF and Flatpak.
+- Configures applications by managing symlinks with GNU Stow.
+- Automates system setup using Bash scripts or Ansible.
+- Provides a reproducible development environment across Fedora installations.
 
 ## Included Configurations
 
-- **Zsh**
-- **Tmux**
-- **Neovim (LazyVim)**
-- **Kitty Terminal**
-- **Ghostty Terminal**
-- **Starship**
-- **fastfetch**
-- **herdr**
-- **Zsh-plugins**
-- **Custom Scripts**
+- **Zsh** – Shell configuration
+- **Tmux** – Terminal multiplexer
+- **Neovim** – LazyVim configuration
+- **Kitty** – Terminal emulator
+- **Starship** – Shell prompt
+- **fastfetch** – System information
+- **herdr** – Plugin manager
+- **Zsh Plugins** – Shell extensions
+- **aria2** - Download Manager
+- **Custom Scripts** – Personal utility scripts
 
 ## Installation
 
-### Using bash scripts
+There are two ways to set up this environment: using Bash scripts or Ansible. Choose either method depending on your preference.
 
-Clone this repository to your home directory
+### Using Bash Scripts
 
-```
-git clone https://github.com/VaibhavPrakash0503/dotfiles.git ~/dotfiles
-```
+Clone the repository into your home directory:
 
-Move into the dotfiles directory (inside bin) run this command
-
-```
-cd dotfiles/bin/.bin
+```bash
+git clone https://github.com/vaibhav-prk/dotfiles.git ~/dotfiles
 ```
 
-Run the bash script
+Navigate to the setup scripts directory:
 
+```bash
+cd ~/dotfiles/bin/.bin
 ```
+
+Run the setup script:
+
+```bash
 ./setup_fedora.sh
 ```
 
-Restart your terminal for all changes to take effect.
+Restart your terminal for the changes to take effect.
 
-## Using ansible script
+### Using Ansible
 
-Install ansible on your Fedora machine
+Install Ansible:
 
-```
+```bash
 sudo dnf install ansible
 ```
 
-Move in dotfiles dir and inside ansible
+Navigate to the Ansible directory:
 
-```
-cd dotfiles/ansible
+```bash
+cd ~/dotfiles/ansible
 ```
 
-Run the ansible playbook
+Run the playbook:
 
+```bash
+ansible-playbook setup.yml
 ```
-anisble-playbook setup.yml
+
+## Customization
+
+You can customize the packages and configurations installed by the setup scripts.
+
+**Bash scripts:**
+
+```bash
+cd ~/dotfiles/bin/.bin/install/packages/
+```
+
+**Ansible:**
+
+Modify the default variables in the respective role directories:
+
+```text
+ansible/roles/<role_name>/defaults/main.yml
 ```
 
 ## Notes
 
-- **Fedora-specific**: This setup is designed and tested for Fedora Linux
-- The scripts are idempotent where possible, so you can re-run them when setting up new machines
-
-To customize what is being installed checkout these scripts
-
-For bash
-
-```
-cd dotfiles/bin/.bin/install/packages/
-```
-
-For ansible
-
-defaults dir in each role
+- **Fedora-specific:** This setup is designed and tested for Fedora Linux.
+- **Idempotent:** The setup scripts and Ansible tasks are designed to be safely re-run where possible.
+- **GNU Stow:** Configuration files are managed using symlinks, making it easier to maintain and synchronize configurations across machines.
