@@ -4,45 +4,80 @@ This repository contains my personal configuration files and setup scripts for v
 
 ## What This Repo Does
 
-- Automatically installs all required packages (shell, terminal, tools, fonts, etc.) on Fedora via DNF
+- Automatically installs all required packages (shell, terminal, tools, fonts, etc.) on Fedora via DNF and Flatpak
 - Sets up configuration files using GNU Stow to create symlinks
-- Provides a reproducible environment for Zsh, Neovim (LazyVim), Tmux, Kitty/Ghostty, and more
-
-You do **not** need to install any prerequisites manually. The `install.sh` script will handle installing all necessary packages (Zsh, Tmux, Kitty, Ghostty, Neovim, Starship, bat, fzf, yazi, stow, JetBrains Mono Nerd Font, etc.) on your Fedora system.
+- Provides a reproducible environment for Zsh, Neovim (LazyVim), Herdr, Kitty/Ghostty, and more
 
 ## Included Configurations
 
-- **Zsh** (`~/.zshrc`)
-- **Tmux** (`~/.tmux.conf`)
-- **Neovim (LazyVim)** (`~/.config/nvim`)
-- **Kitty Terminal** (`~/.config/kitty`)
-- **Ghostty Terminal** (`~/.config/ghostty`)
-- **Starship** (`~/.config/starship.toml`)
-- **Custom Scripts** (`~/.bin`)
+- **Zsh**
+- **Tmux**
+- **Neovim (LazyVim)**
+- **Kitty Terminal**
+- **Ghostty Terminal**
+- **Starship**
+- **fastfetch**
+- **herdr**
+- **Zsh-plugins**
+- **Custom Scripts**
 
 ## Installation
 
-1. Clone this repository to your home directory:
+### Using bash scripts
+
+Clone this repository to your home directory
 
 ```
 git clone https://github.com/VaibhavPrakash0503/dotfiles.git ~/dotfiles
-cd ~/dotfiles/bin/.bin/install
-./install.sh
 ```
 
-## Setup Symlinks
-
-2. Setup Symlinks to config files.
+Move into the dotfiles directory (inside bin) run this command
 
 ```
-cd ..
-./setup_symlinks.sh
+cd dotfiles/bin/.bin
+```
+
+Run the bash script
+
+```
+./setup_fedora.sh
 ```
 
 Restart your terminal for all changes to take effect.
+
+## Using ansible script
+
+Install ansible on your Fedora machine
+
+```
+sudo dnf install ansible
+```
+
+Move in dotfiles dir and inside ansible
+
+```
+cd dotfiles/ansible
+```
+
+Run the ansible playbook
+
+```
+anisble-playbook setup.yml
+```
 
 ## Notes
 
 - **Fedora-specific**: This setup is designed and tested for Fedora Linux
 - The scripts are idempotent where possible, so you can re-run them when setting up new machines
-- Review `install.sh` and `setup_symlinks.sh` if you want to customize which tools or configs are applied.
+
+To customize what is being installed checkout these scripts
+
+For bash
+
+```
+cd dotfiles/bin/.bin/install/packages/
+```
+
+For ansible
+
+defaults dir in each role
