@@ -5,6 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../utils/helpers.sh"
 packages=(
   zsh
   kitty
+  ghostty
   vim
   bat
   fzf

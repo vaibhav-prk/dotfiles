@@ -23,6 +23,7 @@ coprs=(
   "Yazi|lihaohong/yazi"
   "Lazygit|dejan/lazygit"
   "Starship|atim/starship"
+  "Ghostty|scottames|ghostty"
 )
 
 for copr_entry in "${coprs[@]}"; do

@@ -19,6 +19,7 @@ FOLDERS=(
   "$HOME/.config/starship"
   "$HOME/.config/fastfetch"
   "$HOME/.config/kitty"
+  "$HOME/.config/ghostty"
   "$HOME/.config/zsh-syntax-highlighting"
   "$HOME/.config/zsh-autosuggestions"
 )
@@ -71,6 +72,7 @@ pushd "$DOTFILES_DIR" >/dev/null || {
 PACKAGES=(
   bin
   kitty
+  ghostty
   nvim
   starship
   zsh

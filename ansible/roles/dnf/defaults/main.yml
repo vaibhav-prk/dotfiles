@@ -5,6 +5,7 @@ dnf_packages:
   - git
   - zsh
   - kitty
+  - ghostty
   - vim
   - bat
   - fzf

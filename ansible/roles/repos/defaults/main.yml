@@ -1,6 +1,8 @@
 repos_copr:
   - atim/starship
   - dejan/lazygit
+  - lihaohong/yazi
+  - scottames/ghostty
 
 repos_vscode_gpg_key: https://packages.microsoft.com/keys/microsoft.asc
 repos_vscode_repo_file: /etc/yum.repos.d/vscode.repo
