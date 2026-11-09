@@ -2,11 +2,15 @@
 
 theme = Catppuccin Frappe
 font-family = JetBrainsMono Nerd Font
-# font-family = FiraCode Nerd Font
 font-size = 11.5
+
+gtk-titlebar = false
+
 #start in fullscreen mode
-window-width = 1920
-window-height = 1080
+maximize = true
+
+copy-on-select = clipboard
+confirm-close-surface = false
 # This template file has been automatically created at the following
 # path since Ghostty couldn't find any existing config files on your system:
 #
