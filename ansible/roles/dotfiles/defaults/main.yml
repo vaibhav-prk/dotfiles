@@ -11,6 +11,7 @@ dotfiles_stow_clean:
   - .config/zsh-syntax-highlighting
   - .config/zsh-autosuggestions
   - .config/herdr
+  - .config/vicinae
 
 dotfiles_stow_packages:
   - bin
@@ -22,6 +23,9 @@ dotfiles_stow_packages:
   - fastfetch
   - herdr
   - git
+  - aria2
+  - ghostty
+  - vicinae
 
 dotfiles_config_dir: "{{ ansible_facts['env']['HOME'] }}/.config"
 dotfiles_env_file: "{{ dotfiles_config_dir }}/aria2.env"

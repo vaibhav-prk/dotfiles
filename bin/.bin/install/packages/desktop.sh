@@ -23,4 +23,14 @@ else
 fi
 print_separator
 
+echo -e "${BLUE}[Installing]${NC} Vicinae (Launcher)"
+if curl -fsSL https://vicinae.com/install | bash; then
+  print_success "Vicinae installed successfully"
+else
+  print_error "Failed to install Vicinae"
+  return 1
+fi
+
+print_separator
+
 print_section_complete "Desktop Apps installation complete!"

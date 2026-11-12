@@ -22,6 +22,7 @@ FOLDERS=(
   "$HOME/.config/ghostty"
   "$HOME/.config/zsh-syntax-highlighting"
   "$HOME/.config/zsh-autosuggestions"
+  "$HOME/.config/vicinae"
 )
 
 # Function to safely remove files
@@ -81,6 +82,7 @@ PACKAGES=(
   herdr
   git
   aria2
+  vicinae
 )
 
 for pkg in "${PACKAGES[@]}"; do

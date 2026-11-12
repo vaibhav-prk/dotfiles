@@ -44,3 +44,28 @@
     mode: "0644"
     modification_time: preserve
     access_time: preserve
+
+- name: Check if Vicinae is installed
+  ansible.builtin.command: which vicinae
+  register: installers_vicinae_check
+  changed_when: false
+  failed_when: false
+
+- name: Download Vicinae installer
+  ansible.builtin.get_url:
+    url: "{{ installers_vicinae_url }}"
+    dest: "{{ installers_vicinae_installer_path }}"
+    mode: "0755"
+  when: installers_vicinae_check.rc != 0
+
+- name: Install Vicinae
+  ansible.builtin.command:
+    cmd: bash "{{ installers_vicinae_installer_path }}"
+  when: installers_vicinae_check.rc != 0
+  changed_when: installers_vicinae_check.rc != 0
+
+- name: Remove Vicinae installer
+  ansible.builtin.file:
+    path: "{{ installers_vicinae_installer_path }}"
+    state: absent
+  when: installers_vicinae_check.rc != 0

@@ -11,3 +11,6 @@ installers_herdr_plugins:
 installers_nerd_font_name: JetBrainsMono
 installers_nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ installers_nerd_font_name }}.tar.xz"
 installers_nerd_font_dir: "{{ ansible_facts['env']['HOME'] }}/.local/share/fonts/{{ installers_nerd_font_name }}"
+
+installers_vicinae_url: "https://vicinae.com/install"
+installers_vicinae_installer_path: "/tmp/vicinae-install.sh"
