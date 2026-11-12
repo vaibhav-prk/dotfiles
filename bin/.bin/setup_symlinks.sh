@@ -6,7 +6,7 @@ source "$SCRIPT_DIR/utils/helpers.sh"
 if ! command -v stow >/dev/null 2>&1; then
   error "GNU: Stow not installed."
   info "Install that using dnf install stow"
-  return 1 2>/dev/null || exit 1
+  exit 1
 fi
 
 # Define the paths of the files and directories to be removed
@@ -28,7 +28,7 @@ FOLDERS=(
 # Function to safely remove files
 remove_file() {
   local target="${1:-}"
-  if [ -n "$target" ] && ([ -f "$target" ] || [ -L "$target" ]); then
+  if [[ -n "$target" && (-f "$target" || -L "$target") ]]; then
     warn "Removing file: $target"
     rm -r "$target"
   else
@@ -62,12 +62,12 @@ success "Cleanup complete."
 DOTFILES_DIR="${HOME}/dotfiles"
 if [[ ! -d "$DOTFILES_DIR" ]]; then
   error "Dotfiles directory not found at $DOTFILES_DIR"
-  return 1 2>/dev/null || exit 1
+  exit 1
 fi
 
 pushd "$DOTFILES_DIR" >/dev/null || {
   error "Failed to change directory to $DOTFILES_DIR"
-  return 1 2>/dev/null || exit 1
+  exit 1
 }
 
 PACKAGES=(
@@ -89,6 +89,6 @@ for pkg in "${PACKAGES[@]}"; do
   stow -v "$pkg"
 done
 
-popd >/dev/null
+popd >/dev/null || exit 1
 
 success "Stowing complete"
